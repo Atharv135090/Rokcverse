@@ -1,14 +1,17 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import axios from 'axios';
 
 interface User {
   id: string;
-  username: string;
+  name: string;
+  email: string;
   role: 'USER' | 'ADMIN';
 }
 
 interface AuthContextType {
   user: User | null;
-  login: (username: string) => void;
+  login: (email: string, pass: string) => Promise<void>;
+  register: (name: string, email: string, pass: string) => Promise<void>;
   logout: () => void;
   isAdmin: boolean;
 }
@@ -25,25 +28,44 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   }, []);
 
-  const register = (username: string, pass: string) => {
-    const users = JSON.parse(localStorage.getItem('civic_users') || '[]');
-    if (users.find((u: any) => u.username === username)) {
-       throw new Error("User already exists");
-    }
-    const newUser = { username, password: btoa(pass), role: username.toLowerCase().includes('admin') ? 'ADMIN' : 'USER' };
-    users.push(newUser);
-    localStorage.setItem('civic_users', JSON.stringify(users));
-  };
-
-  const login = (username: string, pass: string) => {
-    const users = JSON.parse(localStorage.getItem('civic_users') || '[]');
-    const found = users.find((u: any) => u.username === username && u.password === btoa(pass));
-    
-    if (found) {
-      const newUser: User = { id: Math.random().toString(), username: found.username, role: found.role };
+  const register = async (name: string, email: string, pass: string) => {
+    try {
+      const res = await axios.post('http://localhost:8080/api/auth/register', {
+        name,
+        email,
+        password: btoa(pass)
+      });
+      const newUser: User = { 
+        id: res.data.id.toString(), 
+        name: res.data.name, 
+        email: res.data.email,
+        role: res.data.role 
+      };
       setUser(newUser);
       localStorage.setItem('civic_current_user', JSON.stringify(newUser));
-    } else {
+    } catch (err: any) {
+      if (err.response?.status === 409) {
+          throw new Error("Email already registered");
+      }
+      throw new Error("Registration failed");
+    }
+  };
+
+  const login = async (email: string, pass: string) => {
+    try {
+      const res = await axios.post('http://localhost:8080/api/auth/login', {
+          email,
+          password: btoa(pass)
+      });
+      const newUser: User = { 
+        id: res.data.id.toString(), 
+        name: res.data.name, 
+        email: res.data.email,
+        role: res.data.role 
+      };
+      setUser(newUser);
+      localStorage.setItem('civic_current_user', JSON.stringify(newUser));
+    } catch (err) {
       throw new Error("Invalid credentials");
     }
   };
@@ -56,7 +78,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const isAdmin = user?.role === 'ADMIN';
 
   return (
-    <AuthContext.Provider value={{ user, login, logout, isAdmin, register } as any}>
+    <AuthContext.Provider value={{ user, login, register, logout, isAdmin }}>
       {children}
     </AuthContext.Provider>
   );

@@ -4,21 +4,24 @@ import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { Lock, User, ArrowRight, UserPlus } from 'lucide-react';
 import { toast } from 'react-hot-toast';
+import { Mail } from 'lucide-react';
 
 const Register = () => {
-  const [username, setUsername] = useState('');
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const { register, login } = useAuth() as any;
+  const { register, login } = useAuth();
   const navigate = useNavigate();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      if (username.length < 3) throw new Error("Username too short");
-      if (password.length < 4) throw new Error("Password too short");
+      if (!name.trim()) throw new Error("Name cannot be empty");
+      if (email.length < 3 || !email.includes('@')) throw new Error("Valid email required");
+      if (password.length < 6) throw new Error("Password must be at least 6 characters");
       
-      register(username, password);
-      login(username, password);
+      await register(name, email, password);
+      await login(email, password);
       toast.success("Account created successfully!");
       navigate('/dashboard');
     } catch (err: any) {
@@ -47,15 +50,29 @@ const Register = () => {
 
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="space-y-2">
-            <label className="text-[10px] font-black uppercase tracking-widest text-white/40 ml-4">Identifier</label>
+            <label className="text-[10px] font-black uppercase tracking-widest text-white/40 ml-4">Citizen Name</label>
             <div className="relative group">
                <User className="absolute left-6 top-1/2 -translate-y-1/2 w-5 h-5 text-white/30 group-focus-within:text-[var(--color-success)] transition-colors" />
                <input 
                  type="text" 
-                 value={username}
-                 onChange={(e) => setUsername(e.target.value)}
+                 value={name}
+                 onChange={(e) => setName(e.target.value)}
                  className="w-full pl-14 pr-6 py-4 bg-white/5 border border-white/10 rounded-2xl focus:outline-none focus:ring-4 focus:ring-[var(--color-success)]/20 focus:bg-white/10 transition-all font-bold text-white placeholder-white/10"
-                 placeholder="Enter username"
+                 placeholder="Enter full name"
+               />
+            </div>
+          </div>
+
+          <div className="space-y-2">
+            <label className="text-[10px] font-black uppercase tracking-widest text-white/40 ml-4">Email Address</label>
+            <div className="relative group">
+               <Mail className="absolute left-6 top-1/2 -translate-y-1/2 w-5 h-5 text-white/30 group-focus-within:text-[var(--color-success)] transition-colors" />
+               <input 
+                 type="email" 
+                 value={email}
+                 onChange={(e) => setEmail(e.target.value)}
+                 className="w-full pl-14 pr-6 py-4 bg-white/5 border border-white/10 rounded-2xl focus:outline-none focus:ring-4 focus:ring-[var(--color-success)]/20 focus:bg-white/10 transition-all font-bold text-white placeholder-white/10"
+                 placeholder="Enter email address"
                />
             </div>
           </div>

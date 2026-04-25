@@ -4,6 +4,8 @@ import com.example.civictrack.model.Issue;
 import com.example.civictrack.repository.IssueRepository;
 import com.example.civictrack.service.AiService;
 import com.example.civictrack.service.ImgBBService;
+import com.example.civictrack.repository.UserRepository;
+import com.example.civictrack.model.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
@@ -22,11 +24,13 @@ public class IssueController {
     private final IssueRepository issueRepository;
     private final AiService aiService;
     private final ImgBBService imgBBService;
+    private final UserRepository userRepository;
 
-    public IssueController(IssueRepository issueRepository, AiService aiService, ImgBBService imgBBService) {
+    public IssueController(IssueRepository issueRepository, AiService aiService, ImgBBService imgBBService, UserRepository userRepository) {
         this.issueRepository = issueRepository;
         this.aiService = aiService;
         this.imgBBService = imgBBService;
+        this.userRepository = userRepository;
     }
 
     @GetMapping
@@ -44,7 +48,8 @@ public class IssueController {
     @PostMapping("/report")
     public ResponseEntity<Issue> reportIssue(@RequestParam("image") MultipartFile image,
                                              @RequestParam("latitude") Double latitude,
-                                             @RequestParam("longitude") Double longitude) {
+                                             @RequestParam("longitude") Double longitude,
+                                             @RequestParam(value = "userId", required = false) Long userId) {
         logger.info("Received issue report. Size: {}", image.getSize());
         try {
             // 1. Upload logic
@@ -66,6 +71,10 @@ public class IssueController {
             issue.setLatitude(latitude);
             issue.setLongitude(longitude);
             issue.setStatus("OPEN");
+            
+            if (userId != null) {
+                userRepository.findById(userId).ifPresent(issue::setUser);
+            }
 
             Issue savedIssue = issueRepository.save(issue);
             return ResponseEntity.ok(savedIssue);

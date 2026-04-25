@@ -21,7 +21,6 @@ const Register = () => {
       if (password.length < 6) throw new Error("Password must be at least 6 characters");
       
       await register(name, email, password);
-      await login(email, password);
       toast.success("Account created successfully!");
       navigate('/dashboard');
     } catch (err: any) {

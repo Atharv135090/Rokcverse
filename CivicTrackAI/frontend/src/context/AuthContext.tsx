@@ -48,7 +48,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       if (err.response?.status === 409) {
           throw new Error("Email already registered");
       }
-      throw new Error("Registration failed");
+      const backendError = typeof err.response?.data === 'string' ? err.response.data : err.response?.data?.message;
+      throw new Error(backendError || "Registration failed");
     }
   };
 
@@ -66,8 +67,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       };
       setUser(newUser);
       localStorage.setItem('civic_current_user', JSON.stringify(newUser));
-    } catch (err) {
-      throw new Error("Invalid credentials");
+    } catch (err: any) {
+      const backendError = typeof err.response?.data === 'string' ? err.response.data : err.response?.data?.message;
+      throw new Error(backendError || "Invalid credentials");
     }
   };
 

@@ -29,8 +29,11 @@ public class AiService {
     private final RestTemplate restTemplate;
     private final ObjectMapper objectMapper;
 
-    public AiService(RestTemplate restTemplate) {
-        this.restTemplate = restTemplate;
+    public AiService() {
+        org.springframework.http.client.SimpleClientHttpRequestFactory factory = new org.springframework.http.client.SimpleClientHttpRequestFactory();
+        factory.setConnectTimeout(5000);
+        factory.setReadTimeout(10000);
+        this.restTemplate = new RestTemplate(factory);
         this.objectMapper = new ObjectMapper();
     }
 
@@ -45,7 +48,7 @@ public class AiService {
             if (imageBytes == null) throw new RuntimeException("Failed to download image from URL");
             
             String base64Image = Base64.getEncoder().encodeToString(imageBytes);
-            String url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=" + apiKey;
+            String url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=" + apiKey;
 
             Map<String, Object> requestBody = new HashMap<>();
             

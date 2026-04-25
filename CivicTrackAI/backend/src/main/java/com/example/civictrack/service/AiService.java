@@ -57,7 +57,7 @@ public class AiService {
             imagePart.put("inlineData", inlineData);
 
             Map<String, Object> textPart = new HashMap<>();
-            textPart.put("text", "Analyze this image of a civic issue (e.g. pothole, garbage, broken light). Provide a JSON response EXACTLY in this format, with no markdown formatting or backticks: {\"title\": \"Short descriptive title\", \"description\": \"Detailed description of the issue\", \"priority\": \"HIGH or MEDIUM or LOW\"}");
+            textPart.put("text", "Analyze this image accurately. If it is a civic issue (like a pothole, garbage, or broken infrastructure), identify it specifically. If it is NOT a civic issue, describe exactly what it is (e.g., 'Pet animal', 'Beautiful landscape', 'Person'). Provide a JSON response EXACTLY in this format, with no markdown formatting or backticks: {\"title\": \"Short descriptive title\", \"description\": \"Detailed description of the content\", \"priority\": \"HIGH or MEDIUM or LOW (use LOW for non-issues)\"}");
 
             Map<String, Object> part1 = new HashMap<>();
             part1.put("parts", List.of(textPart, imagePart));

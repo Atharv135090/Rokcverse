@@ -6,44 +6,42 @@
 
 ## 🚀 Overview
 
-CivicLens AI is a smart web-based platform that allows citizens to report civic issues such as potholes, garbage dumping, sewage problems, and broken streetlights using just an image. The system leverages AI to automatically generate issue details like title, description, and priority, making reporting fast, simple, and efficient.
+CivicLens AI is an intelligent web platform that enables citizens to report civic issues such as potholes, garbage dumping, sewage problems, and broken streetlights using **just an image**.
 
-All reports are stored in a centralized database and visualized on a public dashboard and interactive map, ensuring transparency and better urban management.
+The system leverages AI to automatically generate issue details (title, description, and priority), reducing manual effort and enabling faster reporting. All reports are stored in a centralized database and visualized on a public dashboard and interactive map.
 
 ---
 
 ## 💡 Problem Statement
 
-Urban areas face numerous civic issues daily, but existing reporting systems are:
+Urban civic issues are often:
 
-* Slow and manual
-* Lack transparency
-* Not user-friendly
-* Poorly centralized
-
-This leads to delayed resolutions and low citizen engagement.
+* Reported manually and inefficiently
+* Lacking transparency in resolution
+* Scattered across multiple systems
+* Ignored due to low citizen engagement
 
 ---
 
-## 🎯 Solution
+## 🎯 Our Solution
 
-CivicLens AI simplifies the process by:
+CivicLens AI simplifies civic reporting by:
 
-* Allowing users to upload an image of the issue
-* Automatically generating issue details using AI
-* Capturing user location
-* Displaying all reports on a public dashboard and map
+* Allowing **image-only reporting**
+* Using AI to **auto-generate issue details**
+* Automatically capturing **user location**
+* Providing a **public dashboard + map for transparency**
 
 ---
 
 ## 🔥 Key Features
 
-* 📸 **Image-Based Reporting**
-* 🤖 **AI-Generated Title, Description & Priority**
-* 📍 **Automatic Location Detection**
-* 🗺️ **Interactive Map with Issue Markers**
-* 📊 **Public Dashboard (All Reports Visible)**
-* 🌍 **Full Transparency System**
+* 📸 Image-based issue reporting
+* 🤖 AI-generated title, description, and priority
+* 📍 Automatic GPS location detection
+* 🗺️ Interactive map with issue markers
+* 📊 Public dashboard showing all reports
+* 🌍 Transparent and accessible system
 
 ---
 
@@ -51,12 +49,12 @@ CivicLens AI simplifies the process by:
 
 1. User uploads an image
 2. Image is uploaded to ImgBB → URL generated
-3. Image URL is sent to AI (Google AI Studio)
+3. Image URL is sent to Google AI Studio
 4. AI generates:
 
    * Title
    * Description
-   * Priority
+   * Priority (Low / Medium / High)
 5. User location is captured
 6. Data is sent to backend
 7. Stored in MySQL database
@@ -66,17 +64,19 @@ CivicLens AI simplifies the process by:
 
 ## 🏗️ System Architecture
 
+```
 Frontend (React)
-↓
+       ↓
 Backend (Spring Boot)
-↓
+       ↓
 Database (MySQL)
+```
 
-External Services:
+### External Services:
 
-* ImgBB (Image Hosting)
-* Google AI Studio (AI Processing)
-* Google Maps API (Location & Map)
+* ImgBB → Image hosting
+* Google AI Studio → AI processing
+* Google Maps API → Map & location
 
 ---
 
@@ -107,14 +107,14 @@ External Services:
 
 * Displays all reported issues
 * Shows priority levels
-* Helps identify problem areas
-* Provides real-time transparency
+* Highlights problem areas
+* Provides city-wide transparency
 
 ---
 
 ## 🗺️ Map Feature
 
-* Displays issues as markers on map
+* Displays issues as markers
 * Click marker to view:
 
   * Image
@@ -133,7 +133,7 @@ External Services:
   * Description
   * Priority
 
-This reduces manual input and speeds up reporting.
+👉 Eliminates manual form filling
 
 ---
 
@@ -157,8 +157,8 @@ Fetch a specific issue
 
 ```json
 {
-  "title": "Pothole detected on main road",
-  "description": "Large pothole causing traffic disruption",
+  "title": "Large pothole on main road",
+  "description": "A deep pothole causing traffic disruptions",
   "priority": "High",
   "imageUrl": "https://imgbb.com/...",
   "lat": 19.99,
@@ -173,16 +173,20 @@ Fetch a specific issue
 ### 1. Clone Repository
 
 ```bash
-git clone https://github.com/your-repo/civiclens-ai.git
+git clone https://github.com/Atharv135090/Rokcverse.git
 ```
+
+---
 
 ### 2. Frontend Setup
 
 ```bash
 cd frontend
 npm install
-npm run dev
+npm start
 ```
+
+---
 
 ### 3. Backend Setup
 
@@ -191,11 +195,15 @@ cd backend
 mvn spring-boot:run
 ```
 
-### 4. Configure Environment Variables
+---
+
+### 4. Environment Variables
+
+Configure:
 
 * ImgBB API Key
 * Google AI API Key
-* Database credentials
+* MySQL Database credentials
 
 ---
 
@@ -203,8 +211,8 @@ mvn spring-boot:run
 
 * Faster issue reporting
 * Increased citizen participation
-* Transparent system
-* Better city management
+* Transparent governance
+* Better urban planning
 * Data-driven insights
 
 ---
@@ -213,20 +221,27 @@ mvn spring-boot:run
 
 * AI accuracy
 * API latency
-* Image handling
+* Image upload dependency
 * Real-time synchronization
 
 ---
 
 ## 🔮 Future Scope
 
-* Admin dashboard
+* Admin panel for authorities
 * Push notifications
-* Improved AI models
-* Government integration
-* Mobile app expansion
+* AI accuracy improvements
+* Government API integration
+* Mobile application
 
-##
+---
+
+## 👥 Team
+
+* [Your Name]
+* [Teammate Name 1]
+* [Teammate Name 2]
+* [Teammate Name 3]
 
 ---
 
@@ -246,8 +261,8 @@ Rockverse Hackathon 2026
 
 ## 📌 Final Note
 
-CivicLens AI aims to bridge the gap between citizens and authorities by making civic issue reporting faster, smarter, and more transparent.
+CivicLens AI aims to make cities smarter by enabling fast, intelligent, and transparent civic issue reporting.
 
 ---
 
-**⭐ If you like this project, consider giving it a star!**
+**⭐ Star this repo if you like the project!**

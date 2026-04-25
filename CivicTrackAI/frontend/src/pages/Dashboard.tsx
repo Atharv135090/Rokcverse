@@ -12,7 +12,7 @@ const Dashboard = () => {
     useEffect(() => {
         const fetchIssues = async () => {
             try {
-                const res = await axios.get('http://localhost:8080/api/issues');
+                const res = await axios.get('https://civictrack-backend-rjpa.onrender.com/api/issues');
                 setIssues(res.data);
             } catch (err) {
                 console.error(err);

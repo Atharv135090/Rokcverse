@@ -118,9 +118,9 @@ const Report = () => {
         animate={{ opacity: 1, scale: 1 }}
         className="glass max-w-xl w-full p-8 rounded-[2.5rem]"
       >
-        <div className="text-center mb-8">
-          <h2 className="text-4xl font-black mb-2 text-white tracking-tighter">Report an Issue</h2>
-          <p className="text-white/40 font-medium italic">Upload an image and our AI will do the rest.</p>
+        <div className="text-center mb-6 md:mb-8">
+          <h2 className="text-3xl md:text-4xl font-black mb-2 text-white tracking-tighter">Report an Issue</h2>
+          <p className="text-white/40 text-xs md:text-sm font-medium italic">Upload an image and our AI will do the rest.</p>
         </div>
 
         {success ? (
@@ -180,10 +180,10 @@ const Report = () => {
         ) : (
           <form onSubmit={handleSubmit} className="flex flex-col gap-6">
             {!preview ? (
-              <label className="border-2 border-dashed border-white/20 bg-white/5 hover:bg-white/10 transition-all rounded-[2rem] p-16 flex flex-col items-center justify-center cursor-pointer text-center group relative overflow-hidden">
-                <UploadCloud className="w-16 h-16 text-[var(--color-glow)] mb-6 group-hover:scale-110 transition-transform" />
-                <span className="font-black text-xl text-white mb-2 uppercase tracking-widest">Initialize Uplink</span>
-                <span className="text-xs text-white/40 max-w-[200px] font-medium italic">Drag and drop civic evidence to begin neural analysis</span>
+              <label className="border-2 border-dashed border-white/20 bg-white/5 hover:bg-white/10 transition-all rounded-3xl md:rounded-[2rem] p-8 md:p-16 flex flex-col items-center justify-center cursor-pointer text-center group relative overflow-hidden">
+                <UploadCloud className="w-12 h-12 md:w-16 md:h-16 text-[var(--color-glow)] mb-4 md:mb-6 group-hover:scale-110 transition-transform" />
+                <span className="font-black text-lg md:text-xl text-white mb-1 md:mb-2 uppercase tracking-widest leading-tight">Initialize Uplink</span>
+                <span className="text-[10px] md:text-xs text-white/40 max-w-[200px] font-medium italic">Drag and drop civic evidence to begin neural analysis</span>
                 <input type="file" accept="image/*" className="hidden" onChange={handleFileChange} />
               </label>
             ) : (

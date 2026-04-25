@@ -119,7 +119,7 @@ const IssueDetail = () => {
                   <ShieldCheck className="text-[var(--color-glow)] w-5 h-5" />
                   <span className="text-[10px] font-black uppercase tracking-[0.3em] text-[var(--color-glow)]">Verified AI Detection</span>
                 </div>
-                <h1 className="text-5xl md:text-6xl font-black text-white leading-tight tracking-tighter uppercase glitch-text">
+                <h1 className="text-4xl md:text-6xl font-black text-white leading-tight tracking-tighter uppercase glitch-text">
                   {issue.title}
                 </h1>
                 <div className="flex flex-wrap items-center gap-6 text-white/40">
@@ -134,12 +134,12 @@ const IssueDetail = () => {
                 </div>
              </div>
 
-             <div className="p-8 glass-card border border-white/20 relative">
-               <h3 className="text-[10px] font-black uppercase tracking-widest text-[var(--color-glow)] mb-4 italic">&gt; NEURAL_ANALYSIS_LOG</h3>
-               <p className="text-white/80 text-xl font-medium leading-relaxed italic">
-                 "{issue.description}"
-               </p>
-             </div>
+              <div className="p-6 md:p-8 glass-card border border-white/20 relative">
+                <h3 className="text-[10px] font-black uppercase tracking-widest text-[var(--color-glow)] mb-4 italic">&gt; NEURAL_ANALYSIS_LOG</h3>
+                <p className="text-white/80 text-lg md:text-xl font-medium leading-relaxed italic">
+                  "{issue.description}"
+                </p>
+              </div>
 
              <div className="grid grid-cols-2 gap-4 uppercase font-black">
                <div className="p-6 glass border border-white/10 rounded-3xl">

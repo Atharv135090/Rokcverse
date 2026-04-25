@@ -2,12 +2,26 @@ import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
-import { TrendingUp, AlertCircle, CheckCircle, Clock, ArrowRight, PlusCircle, User } from 'lucide-react';
+import { TrendingUp, AlertCircle, CheckCircle, Clock, ArrowRight, PlusCircle, User, Trash2 } from 'lucide-react';
+import { useAuth } from '../context/AuthContext';
+import { toast } from 'react-hot-toast';
 
 const Dashboard = () => {
     const [issues, setIssues] = useState<any[]>([]);
     const [filter, setFilter] = useState('ALL');
     const navigate = useNavigate();
+    const { isAdmin } = useAuth();
+
+    const handleDeleteIssue = async (e: React.MouseEvent, id: number) => {
+        e.stopPropagation();
+        try {
+            await axios.delete(`https://rokcverse-production.up.railway.app/api/issues/${id}`);
+            setIssues(prev => prev.filter(issue => issue.id !== id));
+            toast.success("Record Expunged");
+        } catch (error) {
+            toast.error("Failed to delete record");
+        }
+    };
 
     useEffect(() => {
         const fetchIssues = async () => {
@@ -152,7 +166,18 @@ const Dashboard = () => {
                                             By: <span className="text-white/80">{issue.user?.name || 'Anonymous'}</span>
                                         </span>
                                     </div>
-                                    <ArrowRight className="w-4 h-4 md:w-5 md:h-5 text-white/20 group-hover:text-[var(--color-glow)] group-hover:translate-x-1 transition-all" />
+                                    <div className="flex items-center gap-3">
+                                        {isAdmin && (
+                                            <button 
+                                                onClick={(e) => handleDeleteIssue(e, issue.id)} 
+                                                className="text-red-500/50 hover:text-red-500 transition-colors z-10 p-1"
+                                                title="Expunge Record"
+                                            >
+                                                <Trash2 className="w-4 h-4 md:w-5 md:h-5" />
+                                            </button>
+                                        )}
+                                        <ArrowRight className="w-4 h-4 md:w-5 md:h-5 text-white/20 group-hover:text-[var(--color-glow)] group-hover:translate-x-1 transition-all" />
+                                    </div>
                                 </div>
                             </div>
                         </motion.div>

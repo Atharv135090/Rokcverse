@@ -17,7 +17,10 @@ const Profile = () => {
         if (!user) return;
         setLoading(true);
         try {
-            const res = await axios.get(`https://rokcverse-production.up.railway.app/api/issues/user/${user.id}`);
+            const endpoint = user.role === 'ADMIN' 
+                ? 'https://rokcverse-production.up.railway.app/api/issues' 
+                : `https://rokcverse-production.up.railway.app/api/issues/user/${user.id}`;
+            const res = await axios.get(endpoint);
             setIssues(res.data);
         } catch (error) {
             console.error(error);

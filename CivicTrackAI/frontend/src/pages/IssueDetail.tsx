@@ -11,16 +11,39 @@ const IssueDetail = () => {
   const { id } = useParams();
   const [issue, setIssue] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const [submitting, setSubmitting] = useState(false);
   const navigate = useNavigate();
 
   const handleFormalSubmit = async () => {
+    setSubmitting(true);
     try {
       await axios.put(`https://rokcverse-production.up.railway.app/api/issues/${id}/status?status=FORMALLY_REPORTED`);
       setIssue({ ...issue, status: 'FORMALLY_REPORTED' });
       toast.success("Formal report successfully submitted to municipal authorities.");
     } catch (err) {
       toast.error("Failed to submit formal report.");
+    } finally {
+      setSubmitting(false);
     }
+  };
+
+  const handleShare = async () => {
+    const url = window.location.href;
+    const shareData = { title: `CivicTrack: ${issue?.title}`, url };
+    if (navigator.share) {
+      try {
+        await navigator.share(shareData);
+      } catch (err) {
+        console.error("Share blocked or failed", err);
+      }
+    } else {
+      navigator.clipboard.writeText(url);
+      toast.success("Link copied to clipboard!");
+    }
+  };
+
+  const openMap = () => {
+    window.open(`https://www.google.com/maps?q=${issue?.latitude},${issue?.longitude}`, '_blank');
   };
 
   useEffect(() => {
@@ -108,16 +131,25 @@ const IssueDetail = () => {
                     html: `<div class="w-5 h-5 bg-[var(--color-glow)] rounded-full border-2 border-white shadow-[0_0_15px_rgba(34,211,238,0.8)] animate-pulse"></div>`
                  })} />
                </MapContainer>
-               <div className="absolute inset-0 bg-[var(--color-darkbg)]/40 pointer-events-none" />
+               <div onClick={openMap} className="absolute inset-0 bg-[var(--color-darkbg)]/40 hover:bg-transparent transition-all cursor-pointer flex items-center justify-center opacity-0 hover:opacity-100">
+                  <span className="bg-black/80 text-[var(--color-glow)] px-4 py-2 rounded-xl text-xs font-black uppercase tracking-widest backdrop-blur-md">Open Coordinates</span>
+               </div>
             </div>
           </div>
 
           {/* Right: Data Analysis */}
           <div className="space-y-8 py-4">
               <div className="space-y-4">
-                <div className="flex items-center gap-2">
-                  <ShieldCheck className="text-[var(--color-glow)] w-5 h-5" />
-                  <span className="text-[10px] font-black uppercase tracking-[0.3em] text-[var(--color-glow)]">Verified AI Detection</span>
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <ShieldCheck className="text-[var(--color-glow)] w-5 h-5" />
+                    <span className="text-[10px] font-black uppercase tracking-[0.3em] text-[var(--color-glow)]">Verified AI Detection</span>
+                  </div>
+                  {issue.category && (
+                    <span className="text-[10px] font-black uppercase tracking-widest text-emerald-400 bg-emerald-400/10 px-3 py-1 rounded-full border border-emerald-400/30">
+                      {issue.category}
+                    </span>
+                  )}
                 </div>
                 <h1 className="text-4xl md:text-6xl font-black text-white leading-tight tracking-tighter uppercase glitch-text">
                   {issue.title}
@@ -149,20 +181,25 @@ const IssueDetail = () => {
                    {issue.status}
                  </div>
                </div>
-               <div className="p-6 glass border border-white/10 rounded-3xl flex items-center justify-between">
+               <button onClick={handleShare} className="p-6 glass border border-white/10 rounded-3xl flex items-center justify-between hover:bg-white/5 transition-all text-left group">
                   <div>
-                    <p className="text-[9px] text-white/30 tracking-[0.2em]">Relay Stat</p>
-                    <p className="text-[10px] text-white/80">Assessed</p>
+                    <p className="text-[9px] text-white/30 tracking-[0.2em] group-hover:text-white/50 transition-colors">Relay Stat</p>
+                    <p className="text-[10px] text-white/80 group-hover:text-white transition-colors">Route Uplink</p>
                   </div>
-                  <Share2 className="w-5 h-5 text-white/20" />
-               </div>
+                  <Share2 className="w-5 h-5 text-white/20 group-hover:text-[var(--color-glow)] group-hover:scale-110 transition-all" />
+               </button>
              </div>
 
              <button 
                onClick={handleFormalSubmit}
-               className="w-full py-5 bg-[var(--color-glow)] text-[var(--color-darkbg)] rounded-3xl font-black text-lg shadow-[0_0_40px_rgba(34,211,238,0.5)] hover:scale-[1.02] active:scale-95 transition-all"
+               disabled={submitting || issue.status === 'FORMALLY_REPORTED'}
+               className={`w-full py-5 rounded-3xl font-black text-lg transition-all flex justify-center items-center gap-3 ${
+                 submitting || issue.status === 'FORMALLY_REPORTED' 
+                  ? 'bg-white/5 text-white/30 cursor-not-allowed border border-white/10' 
+                  : 'bg-[var(--color-glow)] text-[var(--color-darkbg)] shadow-[0_0_40px_rgba(34,211,238,0.5)] hover:scale-[1.02] active:scale-95'
+               }`}
              >
-                Submit Formal Report
+                {submitting ? 'Transmitting Data...' : issue.status === 'FORMALLY_REPORTED' ? 'Report Received' : 'Submit Formal Report'}
              </button>
           </div>
         </div>

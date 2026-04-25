@@ -73,6 +73,7 @@ public class IssueController {
             issue.setTitle(aiResult.getTitle());
             issue.setDescription(aiResult.getDescription());
             issue.setPriority(aiResult.getPriority());
+            issue.setCategory(aiResult.getCategory() != null ? aiResult.getCategory() : "Other");
             issue.setLatitude(latitude);
             issue.setLongitude(longitude);
             issue.setStatus("OPEN");

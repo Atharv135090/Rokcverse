@@ -26,6 +26,8 @@ public class Issue {
 
     private String status; // OPEN, IN_PROGRESS, RESOLVED
 
+    private String category; // Pothole, Garbage, Water Leak, Street Light, Traffic, Other
+
     private LocalDateTime createdAt;
 
     @ManyToOne(fetch = FetchType.EAGER)
@@ -68,4 +70,7 @@ public class Issue {
 
     public User getUser() { return user; }
     public void setUser(User user) { this.user = user; }
+
+    public String getCategory() { return category; }
+    public void setCategory(String category) { this.category = category; }
 }

@@ -60,7 +60,7 @@ public class AiService {
             imagePart.put("inlineData", inlineData);
 
             Map<String, Object> textPart = new HashMap<>();
-            textPart.put("text", "Analyze this image accurately. If it is a civic issue (like a pothole, garbage, or broken infrastructure), identify it specifically. If it is NOT a civic issue, describe exactly what it is (e.g., 'Pet animal', 'Beautiful landscape', 'Person'). Provide a JSON response EXACTLY in this format, with no markdown formatting or backticks: {\"title\": \"Short descriptive title\", \"description\": \"Detailed description of the content\", \"priority\": \"HIGH or MEDIUM or LOW (use LOW for non-issues)\"}");
+            textPart.put("text", "Analyze this image accurately. Categorize it strictly into ONE of these categories: 'Pothole', 'Garbage', 'Water Leak', 'Street Light', 'Traffic', or 'Other'. If it is a civic issue, describe it specifically. If it is NOT a civic issue, set category to 'Other' and describe exactly what it is (e.g., 'Pet animal', 'Beautiful landscape'). Provide a JSON response EXACTLY in this format, with no markdown formatting or backticks: {\"title\": \"Short descriptive title\", \"description\": \"Detailed description of the content\", \"priority\": \"HIGH or MEDIUM or LOW (use LOW for non-issues)\", \"category\": \"ONE_OF_ALLOWED_CATEGORIES\"}");
 
             Map<String, Object> part1 = new HashMap<>();
             part1.put("parts", List.of(textPart, imagePart));
@@ -89,20 +89,22 @@ public class AiService {
     }
 
     private AiResult getFallbackResult() {
-        return new AiResult("Civic Issue Detected", "Issue detected from uploaded image", "Medium");
+        return new AiResult("Civic Issue Detected", "Issue detected from uploaded image", "MEDIUM", "Other");
     }
 
     public static class AiResult {
         private String title;
         private String description;
         private String priority;
+        private String category;
 
         public AiResult() {}
 
-        public AiResult(String title, String description, String priority) {
+        public AiResult(String title, String description, String priority, String category) {
             this.title = title;
             this.description = description;
             this.priority = priority;
+            this.category = category;
         }
 
         public String getTitle() { return title; }
@@ -111,5 +113,7 @@ public class AiService {
         public void setDescription(String description) { this.description = description; }
         public String getPriority() { return priority; }
         public void setPriority(String priority) { this.priority = priority; }
+        public String getCategory() { return category; }
+        public void setCategory(String category) { this.category = category; }
     }
 }

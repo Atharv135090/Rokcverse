@@ -173,7 +173,7 @@ const Profile = () => {
                                                 alt={issue.title} 
                                                 className="w-full h-full object-cover transition-transform duration-500"
                                             />
-                                            <div className="absolute top-2 left-2 flex gap-2">
+                                            <div className="absolute top-2 left-2 flex gap-2 flex-wrap max-w-[90%]">
                                                 <span className={`text-[8px] font-black uppercase tracking-widest px-2 py-0.5 rounded-md backdrop-blur-md border ${
                                                     issue.priority === 'HIGH' ? 'bg-red-500/20 text-red-500 border-red-500/50' : 
                                                     issue.priority === 'MEDIUM' ? 'bg-amber-500/20 text-amber-500 border-amber-500/50' :
@@ -181,6 +181,11 @@ const Profile = () => {
                                                 }`}>
                                                     {issue.priority}
                                                 </span>
+                                                {issue.category && (
+                                                    <span className="text-[8px] font-black uppercase tracking-widest px-2 py-0.5 rounded-md backdrop-blur-md border bg-[#0b0f1a]/80 text-[var(--color-glow)] border-[var(--color-glow)]/50">
+                                                        {issue.category}
+                                                    </span>
+                                                )}
                                             </div>
                                         </div>
                                         

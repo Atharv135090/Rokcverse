@@ -125,10 +125,17 @@ const Dashboard = () => {
                                     <Clock className="w-3 h-3 text-[var(--color-glow)]" />
                                     <span className="text-[9px] font-black uppercase text-white/80">{new Date(issue.createdAt).toLocaleDateString()}</span>
                                 </div>
-                                <div className={`absolute bottom-4 left-4 px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest border shadow-2xl ${
-                                    issue.priority === 'HIGH' ? 'bg-red-500/80 border-red-400 neon-badge-pulse-high' : 'bg-amber-500/80 border-amber-400 neon-badge-pulse-medium'
-                                }`}>
-                                    {issue.priority} Priority
+                                <div className="absolute bottom-4 left-4 flex gap-2 flex-wrap">
+                                    <div className={`px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest border shadow-2xl ${
+                                        issue.priority === 'HIGH' ? 'bg-red-500/80 border-red-400 neon-badge-pulse-high' : 'bg-amber-500/80 border-amber-400 neon-badge-pulse-medium'
+                                    }`}>
+                                        {issue.priority} Priority
+                                    </div>
+                                    {issue.category && (
+                                        <div className="px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest border shadow-2xl bg-[#0b0f1a]/80 backdrop-blur-md border-[var(--color-glow)]/50 text-[var(--color-glow)]">
+                                            {issue.category}
+                                        </div>
+                                    )}
                                 </div>
                             </div>
                             <div className="p-5 md:p-6 flex flex-col flex-1">

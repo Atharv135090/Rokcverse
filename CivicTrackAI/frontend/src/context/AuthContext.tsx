@@ -31,7 +31,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const register = async (name: string, email: string, pass: string) => {
     try {
-      const res = await axios.post('http://localhost:8080/api/auth/register', {
+      const res = await axios.post('https://rokcverse-production.up.railway.app/api/auth/register', {
         name,
         email,
         password: btoa(pass)
@@ -54,7 +54,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const login = async (email: string, pass: string) => {
     try {
-      const res = await axios.post('http://localhost:8080/api/auth/login', {
+      const res = await axios.post('https://rokcverse-production.up.railway.app/api/auth/login', {
           email,
           password: btoa(pass)
       });
@@ -74,7 +74,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const updateUser = async (newName: string) => {
     if (!user) return;
     try {
-      const res = await axios.put('http://localhost:8080/api/auth/update', {
+      const res = await axios.put('https://rokcverse-production.up.railway.app/api/auth/update', {
         id: user.id,
         name: newName
       });

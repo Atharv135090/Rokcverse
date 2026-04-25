@@ -12,7 +12,7 @@ const seed = async () => {
     fd.append("latitude", (19.0760 + i * 0.01).toString());
     fd.append("longitude", (72.8777 + i * 0.01).toString());
 
-    await fetch("http://localhost:8080/api/issues/report", {
+    await fetch("https://rokcverse-production.up.railway.app/api/issues/report", {
       method: "POST",
       body: fd
     }).catch(e => console.log(e));

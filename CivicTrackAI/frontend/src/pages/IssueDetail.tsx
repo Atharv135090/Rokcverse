@@ -15,7 +15,7 @@ const IssueDetail = () => {
 
   const handleFormalSubmit = async () => {
     try {
-      await axios.put(`http://localhost:8080/api/issues/${id}/status?status=FORMALLY_REPORTED`);
+      await axios.put(`https://rokcverse-production.up.railway.app/api/issues/${id}/status?status=FORMALLY_REPORTED`);
       setIssue({ ...issue, status: 'FORMALLY_REPORTED' });
       toast.success("Formal report successfully submitted to municipal authorities.");
     } catch (err) {
@@ -24,7 +24,7 @@ const IssueDetail = () => {
   };
 
   useEffect(() => {
-    axios.get(`http://localhost:8080/api/issues/${id}`)
+    axios.get(`https://rokcverse-production.up.railway.app/api/issues/${id}`)
       .then(res => {
         setIssue(res.data);
         setLoading(false);

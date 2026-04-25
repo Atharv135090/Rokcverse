@@ -39,15 +39,23 @@ const MapView = () => {
   const [center, setCenter] = useState<[number, number]>([18.5204, 73.8567]); // Default to Pune
 
   useEffect(() => {
+    // 1. Fetch Issues
     axios.get('http://localhost:8080/api/issues')
       .then(res => {
         setIssues(res.data);
         if (res.data.length > 0) {
            setSelectedIssue(res.data[0]);
-           setCenter([res.data[0].latitude, res.data[0].longitude]);
         }
       })
       .catch(err => console.error(err));
+
+    // 2. Fetch User GeoLocation Immediately
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+            (pos) => setCenter([pos.coords.latitude, pos.coords.longitude]),
+            (err) => console.log("Location access denied or failed, defaulting to Pune")
+        );
+    }
   }, []);
 
   const getPriorityColor = (p: string) => {
@@ -185,7 +193,13 @@ const MapView = () => {
 
         <div className="absolute top-6 right-6 z-[1000]">
           <button 
-            onClick={() => window.location.reload()}
+            onClick={() => {
+                if (navigator.geolocation) {
+                    navigator.geolocation.getCurrentPosition(
+                        (pos) => setCenter([pos.coords.latitude, pos.coords.longitude])
+                    );
+                }
+            }}
             className="w-12 h-12 bg-white/10 text-[var(--color-glow)] rounded-2xl flex items-center justify-center shadow-2xl border border-white/20 backdrop-blur-md hover:bg-white/20 hover:scale-110 active:scale-95 transition-all"
           >
             <LocateFixed className="w-6 h-6" />

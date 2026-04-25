@@ -12,6 +12,7 @@ interface AuthContextType {
   user: User | null;
   login: (email: string, pass: string) => Promise<void>;
   register: (name: string, email: string, pass: string) => Promise<void>;
+  updateUser: (newName: string) => Promise<void>;
   logout: () => void;
   isAdmin: boolean;
 }
@@ -70,6 +71,21 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
+  const updateUser = async (newName: string) => {
+    if (!user) return;
+    try {
+      const res = await axios.put('http://localhost:8080/api/auth/update', {
+        id: user.id,
+        name: newName
+      });
+      const updatedUser: User = { ...user, name: res.data.name };
+      setUser(updatedUser);
+      localStorage.setItem('civic_current_user', JSON.stringify(updatedUser));
+    } catch (err) {
+      throw new Error("Failed to update profile");
+    }
+  };
+
   const logout = () => {
     setUser(null);
     localStorage.removeItem('civic_current_user');
@@ -78,7 +94,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const isAdmin = user?.role === 'ADMIN';
 
   return (
-    <AuthContext.Provider value={{ user, login, register, logout, isAdmin }}>
+    <AuthContext.Provider value={{ user, login, register, updateUser, logout, isAdmin }}>
       {children}
     </AuthContext.Provider>
   );

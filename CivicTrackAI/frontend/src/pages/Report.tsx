@@ -11,6 +11,7 @@ const Report = () => {
   const [preview, setPreview] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
+  const [aiData, setAiData] = useState<any>(null);
   const navigate = useNavigate();
   const { user } = useAuth();
 
@@ -28,11 +29,11 @@ const Report = () => {
   };
 
   const trackReport = (issueId: number) => {
-    if (user?.username) {
-      const myReports = JSON.parse(localStorage.getItem(`my_reports_${user.username}`) || '[]');
+    if (user?.id) {
+      const myReports = JSON.parse(localStorage.getItem(`my_reports_${user.id}`) || '[]');
       if (!myReports.includes(issueId)) {
         myReports.push(issueId);
-        localStorage.setItem(`my_reports_${user.username}`, JSON.stringify(myReports));
+        localStorage.setItem(`my_reports_${user.id}`, JSON.stringify(myReports));
       }
     }
   };
@@ -52,16 +53,20 @@ const Report = () => {
             formData.append('image', file);
             formData.append('latitude', position.coords.latitude.toString());
             formData.append('longitude', position.coords.longitude.toString());
+            if (user?.id) formData.append('userId', user.id);
 
             const res = await axios.post('http://localhost:8080/api/issues/report', formData, {
               headers: { 'Content-Type': 'multipart/form-data' }
             });
 
-            if (res.data && res.data.id) trackReport(res.data.id);
+            if (res.data && res.data.id) {
+               trackReport(res.data.id);
+               setAiData(res.data);
+            }
 
             setLoading(false);
             setSuccess(true);
-            setTimeout(() => navigate('/dashboard'), 2000);
+            setTimeout(() => navigate('/dashboard'), 6000); // Give user 6 seconds to read AI info
           } catch (err) {
             console.error(err);
             toast.error("An error occurred during submission");
@@ -76,13 +81,17 @@ const Report = () => {
             formData.append('image', file);
             formData.append('latitude', '19.0760'); // Default fallback
             formData.append('longitude', '72.8777');
+            if (user?.id) formData.append('userId', user.id);
 
             const res = await axios.post('http://localhost:8080/api/issues/report', formData);
-            if (res.data && res.data.id) trackReport(res.data.id);
+            if (res.data && res.data.id) {
+               trackReport(res.data.id);
+               setAiData(res.data);
+            }
             
             setLoading(false);
             setSuccess(true);
-            setTimeout(() => navigate('/dashboard'), 2000);
+            setTimeout(() => navigate('/dashboard'), 6000);
           } catch (err) {
             console.error(err);
             toast.error("An error occurred during submission");
@@ -138,13 +147,34 @@ const Report = () => {
             >
               DATA TRANSMITTED
             </motion.h3>
+
+            {aiData && (
+              <motion.div 
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: 0.3 }}
+                className="bg-black/30 p-6 rounded-2xl mb-4 max-w-sm w-full text-left border border-white/10"
+              >
+                 <div className="flex items-center justify-between mb-2">
+                    <span className="text-[10px] font-black uppercase text-white/40 tracking-widest">AI Analysis</span>
+                    <span className={`text-[10px] font-black uppercase tracking-widest px-2 py-0.5 rounded-full ${
+                        aiData.priority === 'HIGH' ? 'bg-red-500/20 text-red-400' : 'bg-amber-500/20 text-amber-400'
+                    }`}>
+                        {aiData.priority} PRIORITY
+                    </span>
+                 </div>
+                 <h4 className="text-xl font-bold text-white mb-2 leading-tight">{aiData.title}</h4>
+                 <p className="text-sm font-medium text-white/50 italic line-clamp-3">"{aiData.description}"</p>
+              </motion.div>
+            )}
+
             <motion.p 
               initial={{ y: 20, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
-              transition={{ delay: 0.4 }}
-              className="text-white/40 font-medium italic max-w-sm"
+              transition={{ delay: 0.5 }}
+              className="text-white/40 text-xs font-medium uppercase tracking-[0.2em]"
             >
-              The neural core has successfully analyzed and dispatched your civic report to the local municipal grid.
+              Redirecting to Grid...
             </motion.p>
           </motion.div>
         ) : (

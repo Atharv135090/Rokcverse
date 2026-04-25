@@ -7,9 +7,19 @@ import MapView from './pages/MapView';
 import IssueDetail from './pages/IssueDetail';
 import Login from './pages/Login';
 import Register from './pages/Register';
+import Profile from './pages/Profile';
 import { Toaster } from 'react-hot-toast';
 import { AnimatePresence } from 'framer-motion';
-import { AuthProvider } from './context/AuthContext';
+import { AuthProvider, useAuth } from './context/AuthContext';
+import { Navigate } from 'react-router-dom';
+
+const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
+  const { user } = useAuth();
+  if (!user) {
+    return <Navigate to="/login" replace />;
+  }
+  return <>{children}</>;
+};
 
 function AnimatedRoutes() {
   const location = useLocation();
@@ -17,7 +27,8 @@ function AnimatedRoutes() {
     <AnimatePresence mode="wait">
       <Routes location={location} key={location.pathname}>
         <Route path="/" element={<Home />} />
-        <Route path="/report" element={<Report />} />
+        <Route path="/report" element={<ProtectedRoute><Report /></ProtectedRoute>} />
+        <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/map" element={<MapView />} />
         <Route path="/issues/:id" element={<IssueDetail />} />

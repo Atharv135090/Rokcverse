@@ -14,10 +14,11 @@ const Navbar = () => {
     ];
 
     const authItems = user ? [
-        { label: user.username, icon: Shield, isUser: true },
+        { path: '/profile', label: user.name, icon: Shield, isUser: true },
         { onClick: logout, label: 'Logout', icon: LogOut }
     ] : [
         { path: '/login', label: 'Login', icon: LogIn },
+        { path: '/register', label: 'Register', icon: UserPlus },
     ];
 
     return (

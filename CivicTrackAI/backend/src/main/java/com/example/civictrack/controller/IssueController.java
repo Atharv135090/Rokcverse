@@ -45,6 +45,11 @@ public class IssueController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<List<Issue>> getIssuesByUserId(@PathVariable Long userId) {
+        return ResponseEntity.ok(issueRepository.findByUserId(userId));
+    }
+
     @PostMapping("/report")
     public ResponseEntity<Issue> reportIssue(@RequestParam("image") MultipartFile image,
                                              @RequestParam("latitude") Double latitude,

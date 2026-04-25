@@ -5,20 +5,26 @@ import { useAuth } from '../context/AuthContext';
 import { Lock, User, ArrowRight, Shield } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 
+import { Mail } from 'lucide-react';
+
 const Login = () => {
-  const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const { login } = useAuth();
   const navigate = useNavigate();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (username && password) {
-      login(username);
-      toast.success(`Welcome back, ${username}!`);
-      navigate('/dashboard');
+    if (email && password) {
+      try {
+        await login(email, password);
+        toast.success(`Authentication successful!`);
+        navigate('/dashboard');
+      } catch (err) {
+        toast.error("Invalid credentials. Try again.");
+      }
     } else {
-      toast.error("Please enter credentials");
+      toast.error("Please enter both email and password");
     }
   };
 
@@ -43,15 +49,15 @@ const Login = () => {
 
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="space-y-2">
-            <label className="text-[10px] font-black uppercase tracking-widest text-white/40 ml-4">Identifier</label>
+            <label className="text-[10px] font-black uppercase tracking-widest text-white/40 ml-4">Email Address</label>
             <div className="relative group">
-               <User className="absolute left-6 top-1/2 -translate-y-1/2 w-5 h-5 text-white/30 group-focus-within:text-[var(--color-glow)] transition-colors" />
+               <Mail className="absolute left-6 top-1/2 -translate-y-1/2 w-5 h-5 text-white/30 group-focus-within:text-[var(--color-glow)] transition-colors" />
                <input 
-                 type="text" 
-                 value={username}
-                 onChange={(e) => setUsername(e.target.value)}
+                 type="email" 
+                 value={email}
+                 onChange={(e) => setEmail(e.target.value)}
                  className="w-full pl-14 pr-6 py-4 bg-white/5 border border-white/10 rounded-2xl focus:outline-none focus:ring-4 focus:ring-[var(--color-glow)]/20 focus:bg-white/10 transition-all font-bold text-white placeholder-white/10"
-                 placeholder="Admin or Citizen"
+                 placeholder="citizen@city.gov"
                />
             </div>
           </div>

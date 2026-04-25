@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
-import { Filter, TrendingUp, AlertCircle, CheckCircle, Clock, ArrowRight, PlusCircle } from 'lucide-react';
+import { Filter, TrendingUp, AlertCircle, CheckCircle, Clock, ArrowRight, PlusCircle, User } from 'lucide-react';
 
 const Dashboard = () => {
     const [issues, setIssues] = useState<any[]>([]);
@@ -140,9 +140,11 @@ const Dashboard = () => {
                                 <div className="pt-6 border-t border-white/5 flex items-center justify-between">
                                     <div className="flex items-center gap-2">
                                         <div className="w-8 h-8 rounded-full bg-white/5 border border-white/10 flex items-center justify-center">
-                                            <Filter className="w-3.5 h-3.5 text-white/40" />
+                                            <User className="w-3.5 h-3.5 text-white/40" />
                                         </div>
-                                        <span className="text-[10px] font-black uppercase text-white/20 tracking-tighter">Status: Active</span>
+                                        <span className="text-[10px] font-black uppercase text-white/40 tracking-tighter">
+                                            Reported by: <span className="text-white/80">{issue.user?.name || 'Anonymous'}</span>
+                                        </span>
                                     </div>
                                     <ArrowRight className="w-5 h-5 text-white/20 group-hover:text-[var(--color-glow)] group-hover:translate-x-1 transition-all" />
                                 </div>

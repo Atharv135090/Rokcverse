@@ -55,7 +55,7 @@ const Report = () => {
             formData.append('longitude', position.coords.longitude.toString());
             if (user?.id) formData.append('userId', user.id);
 
-            const res = await axios.post('http://localhost:8080/api/issues/report', formData, {
+            const res = await axios.post('https://civictrack-backend-rjpa.onrender.com/api/issues/report', formData, {
               headers: { 'Content-Type': 'multipart/form-data' }
             });
 
@@ -83,7 +83,7 @@ const Report = () => {
             formData.append('longitude', '72.8777');
             if (user?.id) formData.append('userId', user.id);
 
-            const res = await axios.post('http://localhost:8080/api/issues/report', formData);
+            const res = await axios.post('https://civictrack-backend-rjpa.onrender.com/api/issues/report', formData);
             if (res.data && res.data.id) {
                trackReport(res.data.id);
                setAiData(res.data);

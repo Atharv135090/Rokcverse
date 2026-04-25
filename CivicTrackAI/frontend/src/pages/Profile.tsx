@@ -17,7 +17,7 @@ const Profile = () => {
         if (!user) return;
         setLoading(true);
         try {
-            const res = await axios.get(`http://localhost:8080/api/issues/user/${user.id}`);
+            const res = await axios.get(`https://civictrack-backend-rjpa.onrender.com/api/issues/user/${user.id}`);
             setIssues(res.data);
         } catch (error) {
             console.error(error);
@@ -48,7 +48,7 @@ const Profile = () => {
 
     const handleDeleteIssue = async (id: number) => {
         try {
-            await axios.delete(`http://localhost:8080/api/issues/${id}`);
+            await axios.delete(`https://civictrack-backend-rjpa.onrender.com/api/issues/${id}`);
             toast.success("Anomaly Expunged");
             setIssues(issues.filter(issue => issue.id !== id));
         } catch (error) {

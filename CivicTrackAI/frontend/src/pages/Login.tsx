@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { Lock, User, ArrowRight, Shield } from 'lucide-react';
+import { Lock, ArrowRight, Shield } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 
 import { Mail } from 'lucide-react';

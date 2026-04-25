@@ -1,6 +1,5 @@
 import { Link, useLocation } from 'react-router-dom';
-import { motion } from 'framer-motion';
-import { LayoutDashboard, Map as MapIcon, PlusCircle, LogIn, UserPlus, LogOut, Shield } from 'lucide-react';
+import { LayoutDashboard, Map as MapIcon, LogIn, UserPlus, LogOut, Shield } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 
 const Navbar = () => {
@@ -15,10 +14,10 @@ const Navbar = () => {
 
     const authItems = user ? [
         { path: '/profile', label: user.name, icon: Shield, isUser: true },
-        { onClick: logout, label: 'Logout', icon: LogOut }
+        { onClick: logout, label: 'Logout', icon: LogOut, isUser: false }
     ] : [
-        { path: '/login', label: 'Login', icon: LogIn },
-        { path: '/register', label: 'Register', icon: UserPlus },
+        { path: '/login', label: 'Login', icon: LogIn, isUser: false },
+        { path: '/register', label: 'Register', icon: UserPlus, isUser: false },
     ];
 
     return (
@@ -28,7 +27,7 @@ const Navbar = () => {
                     {navItems.map((item) => (
                         <Link 
                             key={item.path} 
-                            to={item.path!} 
+                            to={item.path} 
                             className={`flex items-center gap-2 transition-all hover:scale-105 ${
                                 item.isBrand 
                                 ? 'text-2xl font-black tracking-tighter neon-text' 
@@ -42,7 +41,7 @@ const Navbar = () => {
                 </div>
 
                 <div className="flex items-center gap-6">
-                    {authItems.map((item, idx) => (
+                    {authItems.map((item: any, idx) => (
                         item.path ? (
                             <Link 
                                 key={idx} 

@@ -2,12 +2,11 @@ import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
-import { Filter, TrendingUp, AlertCircle, CheckCircle, Clock, ArrowRight, PlusCircle, User } from 'lucide-react';
+import { TrendingUp, AlertCircle, CheckCircle, Clock, ArrowRight, PlusCircle, User } from 'lucide-react';
 
 const Dashboard = () => {
     const [issues, setIssues] = useState<any[]>([]);
     const [filter, setFilter] = useState('ALL');
-    const [loading, setLoading] = useState(true);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -15,10 +14,8 @@ const Dashboard = () => {
             try {
                 const res = await axios.get('http://localhost:8080/api/issues');
                 setIssues(res.data);
-                setLoading(false);
             } catch (err) {
                 console.error(err);
-                setLoading(false);
             }
         };
         fetchIssues();

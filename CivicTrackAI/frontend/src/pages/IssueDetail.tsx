@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import axios from 'axios';
-import { MapPin, Clock, AlertTriangle, ArrowLeft, ShieldCheck, Share2 } from 'lucide-react';
+import { MapPin, Clock, ArrowLeft, ShieldCheck, Share2 } from 'lucide-react';
 import { MapContainer, TileLayer, Marker } from 'react-leaflet';
 import L from 'leaflet';
 import { toast } from 'react-hot-toast';

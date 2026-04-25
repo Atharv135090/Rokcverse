@@ -53,7 +53,7 @@ const MapView = () => {
     if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(
             (pos) => setCenter([pos.coords.latitude, pos.coords.longitude]),
-            (err) => console.log("Location access denied or failed, defaulting to Pune")
+            (_err) => console.log("Location access denied or failed, defaulting to Pune")
         );
     }
   }, []);

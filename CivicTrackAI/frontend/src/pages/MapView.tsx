@@ -40,7 +40,7 @@ const MapView = () => {
 
   useEffect(() => {
     // 1. Fetch Issues
-    axios.get('https://civictrack-backend-rjpa.onrender.com/api/issues')
+    axios.get('http://localhost:8080/api/issues')
       .then(res => {
         setIssues(res.data);
         if (res.data.length > 0) {

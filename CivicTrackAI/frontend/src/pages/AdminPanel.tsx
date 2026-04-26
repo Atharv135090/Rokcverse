@@ -156,7 +156,7 @@ const AdminPanel = () => {
                                 </div>
                                 <div>
                                     <p className="text-sm font-bold text-white uppercase tracking-tight">{a.email}</p>
-                                    <p className="text-[10px] text-white/30 uppercase tracking-widest font-black italic">Successful Link Established</p>
+                                    <p className="text-[10px] text-white/30 uppercase tracking-widest font-black italic">Successful Link Established from {a.location || 'Unknown Node'}</p>
                                 </div>
                             </div>
                             <div className="text-right">

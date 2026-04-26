@@ -11,12 +11,14 @@ public class LoginActivity {
     private Long id;
 
     private String email;
+    private String location;
     private LocalDateTime timestamp;
 
     public LoginActivity() {}
 
-    public LoginActivity(String email, LocalDateTime timestamp) {
+    public LoginActivity(String email, String location, LocalDateTime timestamp) {
         this.email = email;
+        this.location = location;
         this.timestamp = timestamp;
     }
 
@@ -24,6 +26,8 @@ public class LoginActivity {
     public void setId(Long id) { this.id = id; }
     public String getEmail() { return email; }
     public void setEmail(String email) { this.email = email; }
+    public String getLocation() { return location; }
+    public void setLocation(String location) { this.location = location; }
     public LocalDateTime getTimestamp() { return timestamp; }
     public void setTimestamp(LocalDateTime timestamp) { this.timestamp = timestamp; }
 }

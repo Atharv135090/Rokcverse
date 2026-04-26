@@ -18,7 +18,7 @@ const Profile = () => {
         if (!user) return;
         setLoading(true);
         try {
-            const endpoint = user.role === 'ADMIN' 
+            const endpoint = isAdmin 
                 ? `${API_URL}/issues` 
                 : `${API_URL}/issues/user/${user.id}`;
             const res = await axios.get(endpoint);
@@ -117,6 +117,16 @@ const Profile = () => {
                             <span className="text-[9px] font-bold text-white/30 tracking-widest uppercase block mb-1">Encrypted Link</span>
                             <span className="text-[10px] md:text-xs text-white/70 font-mono tracking-tight truncate block">{user?.email}</span>
                         </div>
+
+                        {isAdmin && (
+                            <button 
+                                onClick={() => window.location.href = '/admin'}
+                                className="w-full mt-4 bg-red-500/20 hover:bg-red-500/40 border border-red-500/50 text-red-500 hover:text-red-400 py-4 rounded-xl font-black uppercase tracking-[0.2em] transition-all shadow-[0_0_20px_rgba(239,68,68,0.2)] flex items-center justify-center gap-2"
+                            >
+                                <Shield className="w-5 h-5 animate-pulse" />
+                                Admin Command Center
+                            </button>
+                        )}
                     </div>
                 </motion.div>
 

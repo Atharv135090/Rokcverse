@@ -8,7 +8,7 @@ import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 
 const AdminPanel = () => {
-    const { user, isAdmin } = useAuth();
+    const { isAdmin } = useAuth();
     const navigate = useNavigate();
     const [users, setUsers] = useState<any[]>([]);
     const [activities, setActivities] = useState<any[]>([]);

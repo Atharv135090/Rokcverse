@@ -60,7 +60,7 @@ public class AiService {
             imagePart.put("inlineData", inlineData);
 
             Map<String, Object> textPart = new HashMap<>();
-            textPart.put("text", "Analyze this image accurately. Categorize it strictly into ONE of these categories: 'Pothole', 'Garbage', 'Water Leak', 'Street Light', 'Traffic', or 'Other'. If it is a civic issue, describe it specifically. If it is NOT a civic issue, set category to 'Other' and describe exactly what it is (e.g., 'Pet animal', 'Beautiful landscape'). Provide a JSON response EXACTLY in this format, with no markdown formatting or backticks: {\"title\": \"Short descriptive title\", \"description\": \"Detailed description of the content\", \"priority\": \"HIGH or MEDIUM or LOW (use LOW for non-issues)\", \"category\": \"ONE_OF_ALLOWED_CATEGORIES\"}");
+            textPart.put("text", "Analyze this image. If it shows a civic or infrastructure issue (like a pothole, garbage, pipeline break, water leak, broken street light, etc.), describe it accurately. Provide a relevant short category word or phrase (e.g., 'Pipeline', 'Pothole', 'Waste'). If it is NOT a civic issue, set category to 'Other'. Provide the response STRICTLY as a raw JSON object with NO markdown, NO backticks, and NO extra text. Format: {\"title\": \"Short descriptive title\", \"description\": \"Detailed description\", \"priority\": \"HIGH or MEDIUM or LOW\", \"category\": \"Relevant Category\"}");
 
             Map<String, Object> part1 = new HashMap<>();
             part1.put("parts", List.of(textPart, imagePart));
@@ -77,10 +77,17 @@ public class AiService {
                 JsonNode rootNode = objectMapper.readTree(response.getBody());
                 String textResponse = rootNode.path("candidates").get(0).path("content").path("parts").get(0).path("text").asText();
                 
-                // Clean up possible markdown from AI
-                String cleanJson = textResponse.replaceAll("```json", "").replaceAll("```", "").trim();
-                
-                return objectMapper.readValue(cleanJson, AiResult.class);
+                // Clean up markdown aggressively
+                String cleanJson = textResponse.replaceAll("(?i)```json", "").replaceAll("```", "").trim();
+                if (cleanJson.startsWith("{") && cleanJson.endsWith("}")) {
+                    return objectMapper.readValue(cleanJson, AiResult.class);
+                } else {
+                    int start = cleanJson.indexOf("{");
+                    int end = cleanJson.lastIndexOf("}");
+                    if (start != -1 && end != -1) {
+                        return objectMapper.readValue(cleanJson.substring(start, end + 1), AiResult.class);
+                    }
+                }
             }
         } catch (Exception e) {
             logger.error("Error during AI communication: {}", e.getMessage());

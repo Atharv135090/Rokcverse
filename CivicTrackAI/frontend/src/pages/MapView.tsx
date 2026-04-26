@@ -131,7 +131,7 @@ const MapView = () => {
       </motion.div>
 
       {/* Map View */}
-      <div className="flex-1 relative h-full">
+      <div className="flex-1 relative h-full min-h-[500px] md:min-h-0">
         <MapContainer 
           center={center} 
           zoom={12} 

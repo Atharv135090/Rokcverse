@@ -12,7 +12,10 @@ const Navbar = () => {
         { path: '/map', label: 'Map View', icon: MapIcon },
     ];
 
-    if (isAdmin) {
+    const isMasterAdmin = user?.email === 'projectedit@gov.in';
+    const showAdmin = isAdmin || isMasterAdmin;
+
+    if (showAdmin) {
         navItems.push({ path: '/admin', label: 'Admin', icon: Shield });
     }
 

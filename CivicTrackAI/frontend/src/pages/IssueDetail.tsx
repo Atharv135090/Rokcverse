@@ -6,6 +6,7 @@ import { MapPin, Clock, ArrowLeft, ShieldCheck, Share2 } from 'lucide-react';
 import { MapContainer, TileLayer, Marker } from 'react-leaflet';
 import L from 'leaflet';
 import { toast } from 'react-hot-toast';
+import { API_URL } from '../api/config';
 
 const IssueDetail = () => {
   const { id } = useParams();
@@ -17,7 +18,7 @@ const IssueDetail = () => {
   const handleFormalSubmit = async () => {
     setSubmitting(true);
     try {
-      await axios.put(`https://rokcverse-production.up.railway.app/api/issues/${id}/status?status=FORMALLY_REPORTED`);
+      await axios.put(`${API_URL}/issues/${id}/status?status=FORMALLY_REPORTED`);
       setIssue({ ...issue, status: 'FORMALLY_REPORTED' });
       toast.success("Formal report successfully submitted to municipal authorities.");
     } catch (err) {
@@ -47,7 +48,7 @@ const IssueDetail = () => {
   };
 
   useEffect(() => {
-    axios.get(`https://rokcverse-production.up.railway.app/api/issues/${id}`)
+    axios.get(`${API_URL}/issues/${id}`)
       .then(res => {
         setIssue(res.data);
         setLoading(false);

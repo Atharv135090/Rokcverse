@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Trash2, Edit3, Shield, Activity, RefreshCw, Zap } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { toast } from 'react-hot-toast';
+import { API_URL } from '../api/config';
 
 const Profile = () => {
     const { user, updateUser } = useAuth();
@@ -18,8 +19,8 @@ const Profile = () => {
         setLoading(true);
         try {
             const endpoint = user.role === 'ADMIN' 
-                ? 'https://rokcverse-production.up.railway.app/api/issues' 
-                : `https://rokcverse-production.up.railway.app/api/issues/user/${user.id}`;
+                ? `${API_URL}/issues` 
+                : `${API_URL}/issues/user/${user.id}`;
             const res = await axios.get(endpoint);
             setIssues(res.data);
         } catch (error) {
@@ -51,7 +52,7 @@ const Profile = () => {
 
     const handleDeleteIssue = async (id: number) => {
         try {
-            await axios.delete(`https://rokcverse-production.up.railway.app/api/issues/${id}`);
+            await axios.delete(`${API_URL}/issues/${id}`);
             toast.success("Anomaly Expunged");
             setIssues(issues.filter(issue => issue.id !== id));
         } catch (error) {

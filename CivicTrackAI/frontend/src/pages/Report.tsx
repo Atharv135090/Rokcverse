@@ -5,6 +5,7 @@ import axios from 'axios';
 import { UploadCloud, Loader2, CheckCircle2 } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 import { useAuth } from '../context/AuthContext';
+import { API_URL } from '../api/config';
 
 const Report = () => {
   const [file, setFile] = useState<File | null>(null);
@@ -55,7 +56,7 @@ const Report = () => {
             formData.append('longitude', position.coords.longitude.toString());
             if (user?.id) formData.append('userId', user.id);
 
-            const res = await axios.post('https://rokcverse-production.up.railway.app/api/issues/report', formData, {
+            const res = await axios.post(`${API_URL}/issues/report`, formData, {
               headers: { 'Content-Type': 'multipart/form-data' }
             });
 
@@ -83,7 +84,7 @@ const Report = () => {
             formData.append('longitude', '72.8777');
             if (user?.id) formData.append('userId', user.id);
 
-            const res = await axios.post('https://rokcverse-production.up.railway.app/api/issues/report', formData);
+            const res = await axios.post(`${API_URL}/issues/report`, formData);
             if (res.data && res.data.id) {
                trackReport(res.data.id);
                setAiData(res.data);

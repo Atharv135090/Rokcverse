@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import { TrendingUp, AlertCircle, CheckCircle, Clock, ArrowRight, PlusCircle, User, Trash2 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { toast } from 'react-hot-toast';
+import { API_URL } from '../api/config';
 
 const Dashboard = () => {
     const [issues, setIssues] = useState<any[]>([]);
@@ -15,7 +16,7 @@ const Dashboard = () => {
     const handleDeleteIssue = async (e: React.MouseEvent, id: number) => {
         e.stopPropagation();
         try {
-            await axios.delete(`https://rokcverse-production.up.railway.app/api/issues/${id}`);
+            await axios.delete(`${API_URL}/issues/${id}`);
             setIssues(prev => prev.filter(issue => issue.id !== id));
             toast.success("Record Expunged");
         } catch (error) {
@@ -26,7 +27,7 @@ const Dashboard = () => {
     useEffect(() => {
         const fetchIssues = async () => {
             try {
-                const res = await axios.get('https://rokcverse-production.up.railway.app/api/issues');
+                const res = await axios.get(`${API_URL}/issues`);
                 setIssues(res.data);
             } catch (err) {
                 console.error(err);

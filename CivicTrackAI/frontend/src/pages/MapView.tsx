@@ -5,8 +5,10 @@ import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { motion } from 'framer-motion';
 import { LocateFixed, AlertTriangle, Navigation2, ChevronUp, ChevronDown } from 'lucide-react';
+import { API_URL } from '../api/config';
 
 const createPulseMarker = (color: string) => {
+// ... existing createPulseMarker ...
   return L.divIcon({
     className: 'custom-div-icon',
     html: `<div style="background-color: ${color};" class="svj-pulse w-3 h-3 rounded-full border-2 border-white shadow-lg"></div>`,
@@ -40,7 +42,7 @@ const MapView = () => {
   const [showSidebar, setShowSidebar] = useState(true);
 
   useEffect(() => {
-    axios.get('https://rokcverse-production.up.railway.app/api/issues')
+    axios.get(`${API_URL}/issues`)
       .then(res => {
         setIssues(res.data);
         if (res.data.length > 0) {

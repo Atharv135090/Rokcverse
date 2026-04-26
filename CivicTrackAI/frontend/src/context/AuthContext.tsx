@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import axios from 'axios';
+import { API_URL } from '../api/config';
 
 interface User {
   id: string;
@@ -29,13 +30,26 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   }, []);
 
+  // Helper to safely encode strings to Base64 (handling UTF-8 characters)
+  const safeBtoa = (str: string) => {
+    try {
+      return btoa(encodeURIComponent(str).replace(/%([0-9A-F]{2})/g, (_, p1) => {
+        return String.fromCharCode(parseInt(p1, 16));
+      }));
+    } catch (e) {
+      console.warn("safeBtoa fallback for:", str);
+      return btoa(str);
+    }
+  };
+
   const register = async (name: string, email: string, pass: string) => {
     try {
-      const res = await axios.post('https://rokcverse-production.up.railway.app/api/auth/register', {
+      const res = await axios.post(`${API_URL}/auth/register`, {
         name,
         email,
-        password: btoa(pass)
+        password: safeBtoa(pass)
       });
+// ... rest of method ...
       const newUser: User = { 
         id: res.data.id.toString(), 
         name: res.data.name, 
@@ -45,19 +59,17 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       setUser(newUser);
       localStorage.setItem('civic_current_user', JSON.stringify(newUser));
     } catch (err: any) {
-      if (err.response?.status === 409) {
-          throw new Error("Email already registered");
-      }
-      const backendError = typeof err.response?.data === 'string' ? err.response.data : err.response?.data?.message;
+      console.error("Registration error:", err);
+      const backendError = err.response?.data?.error || err.response?.data?.message || (typeof err.response?.data === 'string' ? err.response.data : null);
       throw new Error(backendError || "Registration failed");
     }
   };
 
   const login = async (email: string, pass: string) => {
     try {
-      const res = await axios.post('https://rokcverse-production.up.railway.app/api/auth/login', {
+      const res = await axios.post(`${API_URL}/auth/login`, {
           email,
-          password: btoa(pass)
+          password: safeBtoa(pass)
       });
       const newUser: User = { 
         id: res.data.id.toString(), 
@@ -68,7 +80,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       setUser(newUser);
       localStorage.setItem('civic_current_user', JSON.stringify(newUser));
     } catch (err: any) {
-      const backendError = typeof err.response?.data === 'string' ? err.response.data : err.response?.data?.message;
+      console.error("Login error:", err);
+      const backendError = err.response?.data?.error || err.response?.data?.message || (typeof err.response?.data === 'string' ? err.response.data : null);
       throw new Error(backendError || "Invalid credentials");
     }
   };
@@ -76,15 +89,17 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const updateUser = async (newName: string) => {
     if (!user) return;
     try {
-      const res = await axios.put('https://rokcverse-production.up.railway.app/api/auth/update', {
+      const res = await axios.put(`${API_URL}/auth/update`, {
         id: user.id,
         name: newName
       });
       const updatedUser: User = { ...user, name: res.data.name };
       setUser(updatedUser);
       localStorage.setItem('civic_current_user', JSON.stringify(updatedUser));
-    } catch (err) {
-      throw new Error("Failed to update profile");
+    } catch (err: any) {
+      console.error("Update error:", err);
+      const backendError = err.response?.data?.error || "Failed to update profile";
+      throw new Error(backendError);
     }
   };
 

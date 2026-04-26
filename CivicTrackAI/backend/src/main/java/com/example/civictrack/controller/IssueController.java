@@ -16,7 +16,6 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/issues")
-@CrossOrigin(origins = "*", maxAge = 3600)
 public class IssueController {
 
     private static final Logger logger = LoggerFactory.getLogger(IssueController.class);

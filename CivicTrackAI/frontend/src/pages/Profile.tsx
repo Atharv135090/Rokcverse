@@ -7,7 +7,7 @@ import { toast } from 'react-hot-toast';
 import { API_URL } from '../api/config';
 
 const Profile = () => {
-    const { user, updateUser } = useAuth();
+    const { user, updateUser, isAdmin } = useAuth();
     const [issues, setIssues] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
     const [isEditing, setIsEditing] = useState(false);

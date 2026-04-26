@@ -4,13 +4,17 @@ import { useAuth } from '../context/AuthContext';
 
 const Navbar = () => {
     const location = useLocation();
-    const { user, logout } = useAuth();
+    const { user, logout, isAdmin } = useAuth();
 
     const navItems = [
         { path: '/', label: 'CivicTrack AI', isBrand: true },
         { path: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
         { path: '/map', label: 'Map View', icon: MapIcon },
     ];
+
+    if (isAdmin) {
+        navItems.push({ path: '/admin', label: 'Admin', icon: Shield });
+    }
 
     const authItems = user ? [
         { path: '/profile', label: user.name, icon: Shield, isUser: true },

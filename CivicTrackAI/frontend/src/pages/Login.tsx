@@ -20,8 +20,8 @@ const Login = () => {
         await login(email, password);
         toast.success(`Authentication successful!`);
         navigate('/dashboard');
-      } catch (err) {
-        toast.error("Invalid credentials. Try again.");
+      } catch (err: any) {
+        toast.error(err.message || "Invalid credentials. Try again.");
       }
     } else {
       toast.error("Please enter both email and password");

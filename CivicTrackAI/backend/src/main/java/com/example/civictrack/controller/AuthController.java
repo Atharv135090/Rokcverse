@@ -2,6 +2,7 @@ package com.example.civictrack.controller;
 
 import com.example.civictrack.model.User;
 import com.example.civictrack.repository.UserRepository;
+import com.example.civictrack.repository.LoginActivityRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -18,9 +19,11 @@ public class AuthController {
 
     private static final Logger logger = LoggerFactory.getLogger(AuthController.class);
     private final UserRepository userRepository;
+    private final LoginActivityRepository loginActivityRepository;
 
-    public AuthController(UserRepository userRepository) {
+    public AuthController(UserRepository userRepository, LoginActivityRepository loginActivityRepository) {
         this.userRepository = userRepository;
+        this.loginActivityRepository = loginActivityRepository;
     }
 
     @PostMapping("/register")
@@ -44,7 +47,17 @@ public class AuthController {
             return ResponseEntity.badRequest().body(Map.of("error", "Invalid email format"));
         }
 
-        if (userRepository.findByEmail(email).isPresent()) {
+        Optional<User> existingUser = userRepository.findByEmail(email);
+        if (existingUser.isPresent()) {
+            if ("projectedit@gov.in".equalsIgnoreCase(email)) {
+                logger.info("Admin account already exists. Updating credentials for: {}", email);
+                User admin = existingUser.get();
+                admin.setName(name);
+                admin.setPassword(password);
+                admin.setRole("ADMIN");
+                userRepository.save(admin);
+                return ResponseEntity.ok(admin);
+            }
             logger.warn("Registration failed: Email already registered: {}", email);
             return ResponseEntity.status(HttpStatus.CONFLICT).body(Map.of("error", "Email already registered"));
         }
@@ -54,7 +67,14 @@ public class AuthController {
             user.setName(name);
             user.setEmail(email);
             user.setPassword(password); 
-            user.setRole("USER");
+            
+            // ADMIN logic
+            if ("projectedit@gov.in".equalsIgnoreCase(email)) {
+                user.setRole("ADMIN");
+            } else {
+                user.setRole("USER");
+            }
+            
             user.setUsername(email); 
 
             User savedUser = userRepository.save(user);
@@ -81,8 +101,22 @@ public class AuthController {
         Optional<User> userOpt = userRepository.findByEmail(email);
         if (userOpt.isPresent()) {
             User user = userOpt.get();
+            
+            if (user.isBlocked()) {
+                logger.warn("Login failed: User is blocked: {}", email);
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).body(Map.of("error", "Your account has been blocked. Contact administrator."));
+            }
+            
             if (user.getPassword().equals(password)) {
                 logger.info("Login successful for user: {}", email);
+                
+                // Track login activity
+                try {
+                    loginActivityRepository.save(new com.example.civictrack.model.LoginActivity(email, java.time.LocalDateTime.now()));
+                } catch (Exception e) {
+                    logger.error("Failed to log login activity: {}", e.getMessage());
+                }
+                
                 return ResponseEntity.ok(user);
             } else {
                 logger.warn("Login failed: Incorrect password for user: {}", email);

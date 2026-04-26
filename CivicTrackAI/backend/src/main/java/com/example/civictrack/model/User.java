@@ -24,6 +24,8 @@ public class User {
 
     private String role; // e.g., "ROLE_USER", "ROLE_ADMIN"
 
+    private boolean isBlocked = false;
+
     private LocalDateTime createdAt;
 
     @PrePersist
@@ -43,6 +45,8 @@ public class User {
     public void setPassword(String password) { this.password = password; }
     public String getRole() { return role; }
     public void setRole(String role) { this.role = role; }
+    public boolean isBlocked() { return isBlocked; }
+    public void setBlocked(boolean blocked) { isBlocked = blocked; }
     public LocalDateTime getCreatedAt() { return createdAt; }
     public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
 }
